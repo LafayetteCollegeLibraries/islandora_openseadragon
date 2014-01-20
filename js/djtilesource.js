@@ -9,19 +9,18 @@
    *
    * @class
    * @extends Seadragon.TileSource
-   * @param {string} baseURL
-   *   The base URL of the djatoka server.
    * @param {string} imageID
-   *   The image identifier.
+   *   The UR{I,L} of the image.
    */
-  $.DjatokaTileSource = function(baseURL, imageID, settings) {
+  $.DjatokaTileSource = function(imageID, settings) {
+
     var that = this;
     var djatoka_get_params = {
       'url_ver': 'Z39.88-2004',
       'rft_id': imageID,
       'svc_id': 'info:lanl-repo/svc/getMetadata'
     };
-    this.baseURL = baseURL;
+    this.baseURL = '/adore-djatoka/resolver';
     this.imageID = imageID;
     var djatoka_get_success = function(data, textStatus, jqXHR) {
       $.TileSource.call(

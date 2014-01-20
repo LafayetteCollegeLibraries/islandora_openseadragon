@@ -9,10 +9,33 @@
           config.tileSources = new Array();
           resourceUri = (resourceUri instanceof Array) ? resourceUri : new Array(resourceUri);
           $.each(resourceUri, function(index, uri) {
-            var tileSource = new OpenSeadragon.DjatokaTileSource(config.djatokaServerBaseURL, uri, settings.islandoraOpenSeadragon);
+            var tileSource = new OpenSeadragon.DjatokaTileSource(uri, settings.islandoraOpenSeadragon);
             config.tileSources.push(tileSource);
           });
+
+	  /**
+	   * @author griffinj@lafayette.edu
+	   * Work-around for scrolling
+	   *
+	   */
+	  config.zoomPerScroll = 1;
+
           var viewer = new OpenSeadragon(config);
+
+	  /**
+	   * @author griffinj@lafayette.edu
+	   * Work-around for scrolling
+	   *
+	   */
+	  /*
+	  viewer.getHandler('container-enter');
+
+	  viewer.addHandler('container-enter', function(e) {
+
+		  console.log(e);
+	      });
+	  */
+
           var update_clip = function(viewer) {
             var fitWithinBoundingBox = function(d, max) {
               if (d.width/d.height > max.x/max.y) {
@@ -68,16 +91,37 @@
               'svc.format': 'image/jpeg',
               'svc.region': scaled_box.y + ',' + scaled_box.x + ',' + (scaled_box.getBottomRight().y - scaled_box.y) + ',' + (scaled_box.getBottomRight().x - scaled_box.x),
             };
-            var dimensions = (zoom <= 1) ? source.dimensions.x + ',' + source.dimensions.y : container.x + ',' + container.y;
-            jQuery("#clip").attr('href',  Drupal.settings.basePath + 'islandora/object/' + settings.islandoraOpenSeadragon.pid + '/print?' + jQuery.param({
+	    /**
+	     * @author griffinj
+	     * Work-around for HTTPS and XSRF
+	     *
+
+	     jQuery("#clip").attr('href',  Drupal.settings.basePath + 'islandora/object/' + settings.islandoraOpenSeadragon.pid + '/print?' + jQuery.param({
+	     */
+	    jQuery("#clip").attr('href',  Drupal.settings.basePath.replace(/^https/, 'http') + 'islandora/object/' + settings.islandoraOpenSeadragon.pid + '/print?' + jQuery.param({
               'clip': source.baseURL + '?' + jQuery.param(params),
-              'dimensions': dimensions,
+              'dimensions': container.x + ',' + container.y,
             }));
           };
           viewer.addHandler("open", update_clip);
           viewer.addHandler("animationfinish", update_clip);
           $(this).addClass('processed');
         }
+
+	/**
+	 * @griffinj
+	 * Accessing the Object within the global Drupal scope...
+	 * @author griffinj
+	 * (Integration with HTML5)
+	 * Handling the back button
+	 */
+	window.onpopstate = function() {
+
+	    if(!this.location.pathname.match(/#fullPage$/)) {
+
+		viewer.setFullPage(false);
+	    }
+	};
       });
     }
   };

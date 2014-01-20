@@ -2,6 +2,7 @@
 
 /**
  * @file
+ *
  * Admin callbacks for Islandora OpenSeadragon
  */
 
@@ -11,7 +12,7 @@
 function islandora_openseadragon_admin($form, &$form_state) {
   drupal_add_css(drupal_get_path('module', 'islandora_openseadragon') . '/css/islandora_openseadragon.admin.css');
 
-  // Get settings.
+  // get settings
   $settings = islandora_openseadragon_get_settings();
 
   $form = array();
@@ -19,22 +20,14 @@ function islandora_openseadragon_admin($form, &$form_state) {
     '#type' => 'container',
     '#tree' => TRUE,
   );
-  // Debug mode.
+  // debug mode
   $form['islandora_openseadragon_settings']['debugMode'] = array(
     '#type' => 'checkbox',
     '#title' => t('Debug mode'),
     '#default_value' => $settings['debugMode'],
-    '#description' => t('Toggles whether messages should be logged and fail-fast behavior should be provided.'),
+    '#description' => t('Whether messages should be logged and fail-fast behavior should be provided.'),
   );
-  // Location of the djatoka servers.
-  $form['islandora_openseadragon_settings']['djatokaServerBaseURL'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Djatoka server base URL'),
-    '#element_validate' => array('djatoka_base_url_validate'),
-    '#default_value' => $settings['djatokaServerBaseURL'],
-    '#description' => t('The location of the Djatoka server OpenURL resolver.'),
-  );
-  // Animation time.
+  // animation time
   $form['islandora_openseadragon_settings']['animationTime'] = array(
     '#type' => 'textfield',
     '#title' => t('Animation time'),
@@ -43,7 +36,7 @@ function islandora_openseadragon_admin($form, &$form_state) {
     '#default_value' => $settings['animationTime'],
     '#description' => t('The amount of time in seconds that animations should last.'),
   );
-  // Blend time.
+  // blend time
   $form['islandora_openseadragon_settings']['blendTime'] = array(
     '#type' => 'textfield',
     '#title' => t('Blend time'),
@@ -52,76 +45,69 @@ function islandora_openseadragon_admin($form, &$form_state) {
     '#default_value' => $settings['blendTime'],
     '#description' => t('The amount of time in seconds that new tiles take to blend from transparent to opaque.'),
   );
-  // Always blend.
+  // always blend
   $form['islandora_openseadragon_settings']['alwaysBlend'] = array(
     '#type' => 'checkbox',
     '#title' => t('Always blend'),
     '#default_value' => $settings['alwaysBlend'],
-    '#description' => t("Toggles whether tiles should always blend in and out, and not just when they're first loaded."),
+    '#description' => t('Whether tiles should always blend in and out, not just when they\'re first loaded.'),
   );
-  // Auto hide controls.
+  // auto hide controls
   $form['islandora_openseadragon_settings']['autoHideControls'] = array(
     '#type' => 'checkbox',
-    '#title' => t('Auto-hide controls'),
+    '#title' => t('Auto hide controls'),
     '#default_value' => $settings['autoHideControls'],
-    '#description' => t("Toggles whether controls should get automatically hidden when the user's mouse is off the viewer and the image has stopped animating."),
+    '#description' => t('Whether controls should get automatically hidden when the user\'s mouse is off the viewer and the image has stopped animating.'),
   );
-  // Immediate render.
+  // immediate render
   $form['islandora_openseadragon_settings']['immediateRender'] = array(
     '#type' => 'checkbox',
     '#title' => t('Immediate render'),
     '#default_value' => $settings['immediateRender'],
-    '#description' => t('Toggles whether the most appropriate tiles should always be rendered first, before any lower-resolution tiles are rendered. This loses the "sharpening" effect and instead creates a very visible "tiling" effect.'),
+    '#description' => t('Whether the most appropriate tiles should always be rendered first, before any lower-res tiles are rendered. This loses the "sharpening" effect and instead creates a very visible "tiling" effect.'),
   );
-  // Wrap horizontal.
+  // wrap horizontal
   $form['islandora_openseadragon_settings']['wrapHorizontal'] = array(
     '#type' => 'checkbox',
     '#title' => t('Wrap horizontal'),
     '#default_value' => $settings['wrapHorizontal'],
     '#description' =>
-    t('Toggles whether tiles should be "wrapped" horizontally, so that there are no left or right edges.') . '<br />' .
+    t('Whether tiles should be "wrapped" horizontally, so that there are no left or right edges.') . '<br />' .
     '<strong>' . t('NOTE: this is an experimental API and is not guaranteed to work. The API is also very likely to change in the future. Use at your own risk!') . '</strong>',
   );
-  // Wrap vertical.
+  // wrap vertical
   $form['islandora_openseadragon_settings']['wrapVertical'] = array(
     '#type' => 'checkbox',
-    '#title' => t('Wrap vertical'),
+    '#title' => t('Wrap horizontal'),
     '#default_value' => $settings['wrapVertical'],
     '#description' =>
-    t('Toggles whether tiles should be "wrapped" vertically, so that there are no top or bottom edges.') . '<br />' .
+    t('Whether tiles should be "wrapped" vertically, so that there are no top or bottom edges.') . '<br />' .
     '<strong>' . t('NOTE: this is an experimental API and is not guaranteed to work. The API is also very likely to change in the future. Use at your own risk!') . '</strong>',
   );
-  // Wrap overlays.
+  // wrap overlays
   $form['islandora_openseadragon_settings']['wrapOverlays'] = array(
     '#type' => 'checkbox',
     '#title' => t('Wrap overlays'),
     '#default_value' => $settings['wrapOverlays'],
     '#description' =>
-    t('Toggles whether overlays should be continually repositioned to match any horizontal or vertical wrapping. This has no effect if neither Wrap Horizontal nor Wrap Vertical are set.') . '<br />' .
+    t('Whether overlays should be continually re-positioned to match any horizontal or vertical wrapping. This has no effect if neither wrapHorizontal nor wrapVertical are set.') . '<br />' .
     '<strong>' . t('NOTE: this is an experimental API and is not guaranteed to work. The API is also very likely to change in the future. Use at your own risk!') . '</strong>',
   );
-  // Pan horizontal.
+  // pan horizontal
   $form['islandora_openseadragon_settings']['panHorizontal'] = array(
     '#type' => 'checkbox',
     '#title' => t('Pan horizontal'),
     '#default_value' => $settings['panHorizontal'],
-    '#description' => t('Toggles whether images can be moved along the horizontal axis of the viewer.'),
+    '#description' => t('Whether the image should be able to panned horizontally.'), // @TODO: better description
   );
-  // Pan vertical.
+  // pan vertical
   $form['islandora_openseadragon_settings']['panVertical'] = array(
     '#type' => 'checkbox',
     '#title' => t('Pan vertical'),
     '#default_value' => $settings['panVertical'],
-    '#description' => t('Toggles whether images can be moved along the vertical axis of the viewer.'),
+    '#description' => t('Whether the image should be able to panned vertically.'), // @TODO: better description
   );
-  // Show Navigator.
-  $form['islandora_openseadragon_settings']['showNavigator'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Show Navigator'),
-    '#default_value' => $settings['showNavigator'],
-    '#description' => t('Toggles whether image navigator is displayed.'),
-  );
-  // Minimum zoom image ratio.
+  // minimum zoom image ratio
   $form['islandora_openseadragon_settings']['minZoomImageRatio'] = array(
     '#type' => 'textfield',
     '#title' => t('Minimum zoom image ratio'),
@@ -130,16 +116,16 @@ function islandora_openseadragon_admin($form, &$form_state) {
     '#default_value' => $settings['minZoomImageRatio'],
     '#description' => t('The minimum image ratio (image size to viewer size) in both dimensions that can result from zooming out.'),
   );
-  // Maximum zoom pixel ratio.
+  // maximum zoom pixel ratio
   $form['islandora_openseadragon_settings']['maxZoomPixelRatio'] = array(
     '#type' => 'textfield',
     '#title' => t('Maximum zoom pixel ratio'),
     '#size' => 10,
     '#element_validate' => array('element_validate_number'),
     '#default_value' => $settings['maxZoomPixelRatio'],
-    '#description' => t('The maximum pixel ratio (screen pixels to image file pixels) that can result from zooming in.'),
+    '#description' => t('The maximum pixel ratio (screen pixel to content pixel) that can result from zooming in.'),
   );
-  // Visibility ratio.
+  // visibility ratio
   $form['islandora_openseadragon_settings']['visibilityRatio'] = array(
     '#type' => 'textfield',
     '#title' => t('Visibility ratio'),
@@ -148,7 +134,7 @@ function islandora_openseadragon_admin($form, &$form_state) {
     '#default_value' => $settings['visibilityRatio'],
     '#description' => t('The minimum portion of the viewport that must show visible content in both dimensions.'),
   );
-  // Spring stiffness.
+  // sprint stiffness
   $form['islandora_openseadragon_settings']['springStiffness'] = array(
     '#type' => 'textfield',
     '#title' => t('Spring stiffness'),
@@ -157,7 +143,7 @@ function islandora_openseadragon_admin($form, &$form_state) {
     '#default_value' => $settings['springStiffness'],
     '#description' => t('Determines how sharply the springs used for animations move.'),
   );
-  // Image loader limit.
+  // image loader limit
   $form['islandora_openseadragon_settings']['imageLoaderLimit'] = array(
     '#type' => 'textfield',
     '#title' => t('Image loader limit'),
@@ -166,7 +152,7 @@ function islandora_openseadragon_admin($form, &$form_state) {
     '#default_value' => $settings['imageLoaderLimit'],
     '#description' => t('The maximum number of concurrent image downloads that can be performed by each viewer.'),
   );
-  // Click time threshold.
+  // click time threshold
   $form['islandora_openseadragon_settings']['clickTimeThreshold'] = array(
     '#type' => 'textfield',
     '#title' => t('Click time threshold'),
@@ -175,7 +161,7 @@ function islandora_openseadragon_admin($form, &$form_state) {
     '#default_value' => $settings['clickTimeThreshold'],
     '#description' => t('The maximum number of milliseconds that can pass between a mousedown and a mouseup for the action to still be considered a "quick" click.'),
   );
-  // Cl.ick dist threshold.
+  // click dist threshold
   $form['islandora_openseadragon_settings']['clickDistThreshold'] = array(
     '#type' => 'textfield',
     '#title' => t('Click distance threshold'),
@@ -184,7 +170,7 @@ function islandora_openseadragon_admin($form, &$form_state) {
     '#default_value' => $settings['clickDistThreshold'],
     '#description' => t('The maximum number of pixels the mouse can move between a mousedown and a mouseup for the action to still be considered a "quick" click.'),
   );
-  // Zoom per click.
+  // zoom per click
   $form['islandora_openseadragon_settings']['zoomPerClick'] = array(
     '#type' => 'textfield',
     '#title' => t('Zoom per click'),
@@ -193,7 +179,7 @@ function islandora_openseadragon_admin($form, &$form_state) {
     '#default_value' => $settings['zoomPerClick'],
     '#description' => t('The factor by which images should zoom when clicked on.'),
   );
-  // Zoom per scroll.
+  // zoom per scroll
   $form['islandora_openseadragon_settings']['zoomPerScroll'] = array(
     '#type' => 'textfield',
     '#title' => t('Zoom per scroll'),
@@ -202,38 +188,38 @@ function islandora_openseadragon_admin($form, &$form_state) {
     '#default_value' => $settings['zoomPerScroll'],
     '#description' => t('The factor by which images should zoom when scrolled over.'),
   );
-  // Zoom per second.
+  // zoom per second
   $form['islandora_openseadragon_settings']['zoomPerSecond'] = array(
     '#type' => 'textfield',
     '#title' => t('Zoom per second'),
     '#size' => 10,
     '#element_validate' => array('element_validate_number'),
     '#default_value' => $settings['zoomPerSecond'],
-    '#description' => t('The factor by which images should zoom every second when the zoom buttons are held down.'),
+    '#description' => t('The factor by which images should zoom over each second when the zoom buttons are held down.'),
   );
 
-  // Tile size.
+  // tile size
   $form['islandora_openseadragon_tile_size'] = array(
     '#type' => 'textfield',
     '#title' => t('Tile size'),
     '#size' => 10,
     '#element_validate' => array('element_validate_integer'),
     '#default_value' => variable_get('islandora_openseadragon_tile_size', '256'),
-    '#description' => t('The size of image tiles used to compose the image as a whole, in pixels.'),
+    '#description' => t('tile size setting.'),
   );
-  // Tile overlap.
+  // tile overlap
   $form['islandora_openseadragon_tile_overlap'] = array(
     '#type' => 'textfield',
     '#title' => t('Tile overlap'),
     '#size' => 10,
     '#element_validate' => array('element_validate_integer'),
     '#default_value' => variable_get('islandora_openseadragon_tile_overlap', '0'),
-    '#description' => t('The number of pixels by which each tile will overlap adjacent ones.'),
+    '#description' => t('tile overlap setting.'),
   );
 
-  // Actions.
+  // actions
   $form['actions'] = array(
-    '#type' => 'actions',
+    '#type' => 'actions'
   );
   $form['actions']['reset'] = array(
     '#type' => 'submit',
@@ -245,33 +231,6 @@ function islandora_openseadragon_admin($form, &$form_state) {
   return system_settings_form($form);
 }
 
-/**
- * Validates that the supplied djatoka base URL is a working djatoka install.
- */
-function djatoka_base_url_validate($element, &$form_state, $form) {
-  $url = $element['#value'];
-
-  if (empty($url)) {
-    form_error($element, t('This field is required.'));
-  }
-  else {
-    // Work around drupal_http_request's not handling relative URLs.
-    if (strpos($url, '/') === 0) {
-      $url = $GLOBALS['base_url'] . $url;
-    }
-
-    // Check that it's working with LOC's stable external JP2 image.
-    $result = drupal_http_request(check_url($url) . '?url_ver=Z39.88-2004&rft_id=http%3A%2F%2Fmemory.loc.gov%2Fgmd%2Fgmd433%2Fg4330%2Fg4330%2Fnp000066.jp2&svc_id=info:lanl-repo/svc/getRegion&svc_val_fmt=info:ofi/fmt:kev:mtx:jpeg2000&svc.format=image/jpeg&svc.level=1');
-
-    if ($result->code != 200) {
-      form_error($element, t('This does not seem to be a functioning Djatoka server.'));
-    }
-  }
-}
-
-/**
- * Handles a submit from the admin pane.
- */
 function islandora_openseadragon_admin_submit($form, &$form_state) {
   $op = $form_state['clicked_button']['#id'];
   switch ($op) {
