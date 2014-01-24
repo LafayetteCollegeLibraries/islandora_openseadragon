@@ -122,6 +122,37 @@
 	  $(viewer.element).find('form div').addClass('openseadragon-controls-container');
 	  $($(viewer.element).find('form div')[1]).attr('id', 'openseadragon-size-transform-container');
 
+	  /**
+	   * @author griffinj@lafayette.edu
+	   *
+	   * Work-around for updating size controls upon rendering the image as a full-screen image
+	   *
+	   */
+
+          //viewer.addHandler('pre-full-screen', function(event) {
+	  $('#openseadragon-size-transform-container span fieldgroup button:nth-of-type(4)').click(function(e) {
+
+		  var img = $(this).find('img');
+
+		  if(/fullpage/.exec( img.attr('src'))) {
+
+		      img.attr('src', '/sites/all/libraries/openseadragon/images/reducepage_ImageIcon.png');
+		  } else {
+		      
+		      img.attr('src', '/sites/all/libraries/openseadragon/images/fullpage_ImageIcon.png');
+		  }
+
+		  /*
+		  if(event.fullScreen) {
+
+		      $(eventSource.element).find('#openseadragon-size-transform-container span fieldgroup button:nth-of-type(4) img').attr('src', '/images/reducepage_ImageIcon.png');
+		  } else {
+
+		      $(eventSource.element).find('#openseadragon-size-transform-container span fieldgroup button:nth-of-type(4) img').attr('src', '/images/fullpage_ImageIcon.png');
+		  }
+		  */
+	      });
+
           var update_clip = function(viewer) {
             var fitWithinBoundingBox = function(d, max) {
               if (d.width/d.height > max.x/max.y) {
