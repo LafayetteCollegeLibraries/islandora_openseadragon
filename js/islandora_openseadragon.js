@@ -20,21 +20,107 @@
 	   */
 	  config.zoomPerScroll = 1;
 
+	  /**
+	   * @author griffinj@lafayette.edu
+	   *
+	   */
+	  /*
+            navImages: {
+                zoomIn: {
+                    REST:   '/images/zoomin_rest.png',
+                    GROUP:  '/images/zoomin_grouphover.png',
+                    HOVER:  '/images/zoomin_hover.png',
+                    DOWN:   '/images/zoomin_pressed.png'
+                },
+                zoomOut: {
+                    REST:   '/images/zoomout_rest.png',
+                    GROUP:  '/images/zoomout_grouphover.png',
+                    HOVER:  '/images/zoomout_hover.png',
+                    DOWN:   '/images/zoomout_pressed.png'
+                },
+                home: {
+                    REST:   '/images/home_rest.png',
+                    GROUP:  '/images/home_grouphover.png',
+                    HOVER:  '/images/home_hover.png',
+                    DOWN:   '/images/home_pressed.png'
+                },
+                fullpage: {
+                    REST:   '/images/fullpage_rest.png',
+                    GROUP:  '/images/fullpage_grouphover.png',
+                    HOVER:  '/images/fullpage_hover.png',
+                    DOWN:   '/images/fullpage_pressed.png'
+                },
+                previous: {
+                    REST:   '/images/previous_rest.png',
+                    GROUP:  '/images/previous_grouphover.png',
+                    HOVER:  '/images/previous_hover.png',
+                    DOWN:   '/images/previous_pressed.png'
+                },
+                next: {
+                    REST:   '/images/next_rest.png',
+                    GROUP:  '/images/next_grouphover.png',
+                    HOVER:  '/images/next_hover.png',
+                    DOWN:   '/images/next_pressed.png'
+	        },
+			/**
+			 * @author griffinj@lafayette.edu
+			 * /
+		download: {
+		    REST:   '/images/download_rest.png',
+                    GROUP:  '/images/fullpage_grouphover.png',
+                    HOVER:  '/images/fullpage_hover.png',
+                    DOWN:   '/images/fullpage_pressed.png'
+                },
+	  */
+
+	  config = $.extend(config, {
+
+		  navImages: {
+
+		      zoomIn: {
+			  REST:   '/images/zoomin_ImageIcon.png',
+			  GROUP:   '/images/zoomin_ImageIcon.png',
+			  HOVER:   '/images/zoomin_ImageIcon.png',
+			  DOWN:   '/images/zoomin_ImageIcon.png',
+		      },
+		      zoomOut: {
+			  REST:   '/images/zoomout_ImageIcon.png',
+			  GROUP:   '/images/zoomout_ImageIcon.png',
+			  HOVER:   '/images/zoomout_ImageIcon.png',
+			  DOWN:   '/images/zoomout_ImageIcon.png',
+		      },
+		      home: {
+			  REST:   '/images/home_ImageIcon.png',
+			  GROUP:   '/images/home_ImageIcon.png',
+			  HOVER:   '/images/home_ImageIcon.png',
+			  DOWN:   '/images/home_ImageIcon.png',
+		      },
+		      fullpage: {
+			  REST:   '/images/fullpage_ImageIcon.png',
+			  GROUP:   '/images/fullpage_ImageIcon.png',
+			  HOVER:   '/images/fullpage_ImageIcon.png',
+			  DOWN:   '/images/fullpage_ImageIcon.png',
+		      },
+		      download: {
+			  REST:   '/images/download_ImageIcon.png',
+			  GROUP:   '/images/download_ImageIcon.png',
+			  HOVER:   '/images/download_ImageIcon.png',
+			  DOWN:   '/images/download_ImageIcon.png',
+		      },
+		  }
+	      });
+
           var viewer = new OpenSeadragon(config);
 
 	  /**
 	   * @author griffinj@lafayette.edu
-	   * Work-around for scrolling
+	   *
+	   * Work-around for styling
 	   *
 	   */
-	  /*
-	  viewer.getHandler('container-enter');
 
-	  viewer.addHandler('container-enter', function(e) {
-
-		  console.log(e);
-	      });
-	  */
+	  $(viewer.element).find('form div').addClass('openseadragon-controls-container');
+	  $($(viewer.element).find('form div')[1]).attr('id', 'openseadragon-size-transform-container');
 
           var update_clip = function(viewer) {
             var fitWithinBoundingBox = function(d, max) {
