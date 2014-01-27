@@ -49,6 +49,7 @@ function islandora_openseadragon_islandora_viewer_info() {
       'callback' => 'islandora_openseadragon_callback',
         // DZI has xml as mimetype? Not sure how to handle that.
       'mimetype' => array('image/jp2'),
+      'model' => array('islandora:bookCModel'), // @author griffinj@lafayette.edu
     ),
   );
 }
@@ -65,8 +66,33 @@ function islandora_openseadragon_islandora_viewer_info() {
  * @return string
  *   HTML repersentation of the OpenSeadragon viewer
  */
+
+/**
+ * @author griffinj@lafayette.edu
+ * Rendering pages for books through OpenSeadragon
+ *
+ */
 function islandora_openseadragon_callback($params = NULL, $fedora_object = NULL) {
-  $uri = $params['jp2_url'];
+
+  if(array_key_exists('pages', $params)) {
+
+    module_load_include('inc', 'islandora', 'includes/authtokens');
+    $map = function($page_pid) {
+
+      $page_obj = islandora_object_load($page_pid);
+      $token = islandora_get_object_token($page_obj->id, 'JP2', 2);
+      return url("islandora/object/{$page_obj->id}/datastream/JP2/view",
+		 array('absolute' => TRUE,
+		       'query' => array('token' => $token),
+		       ));
+    };
+
+    $uri = array_map($map, array_keys($params['pages']));
+  } else {
+
+    $uri = $params['jp2_url'];
+  }
+
   return theme('islandora_openseadragon_viewer', array('uri' => $uri, 'fedora_object' => $fedora_object));
 }
 
@@ -126,15 +152,33 @@ function islandora_openseadragon_preprocess_islandora_openseadragon_viewer(&$var
    * Resolving HTTPS issue
    */
 
-  drupal_add_js(array(
-      'islandoraOpenSeadragon' => array(
-	'pid' => isset($variables['fedora_object']) ? $variables['fedora_object']->id : NULL,
-        'resourceUri' => preg_replace('/^https/', 'http', $variables['uri']),
-        'tileSize' => (int) variable_get('islandora_openseadragon_tile_size', '256'),
-        'tileOverlap' => (int) variable_get('islandora_openseadragon_tile_overlap', '0'),
-        'settings' => $settings,
-      ),
-    ), 'setting');
+  /**
+   * griffinj
+   *
+   */
+  $fedora_object = $variables['fedora_object'];
+  $tile_sources = $variables['uri'];
+
+  // Work-around for single images
+  if(!is_array($tile_sources)) {
+
+    $tile_sources = array($tile_sources);
+  }
+
+  // Work-around for the HTTPS
+  $map = function($tile_source) {
+
+    return preg_replace('/^https/', 'http', $tile_source);
+  };
+
+  drupal_add_js(array('islandoraOpenSeadragon' => array('pid' => isset($variables['fedora_object']) ? $variables['fedora_object']->id : NULL,
+							//'resourceUri' => preg_replace('/^https/', 'http', $variables['uri']),
+							'resourceUri' => array_map($map, $tile_sources),
+							'tileSize' => (int) variable_get('islandora_openseadragon_tile_size', '256'),
+							'tileOverlap' => (int) variable_get('islandora_openseadragon_tile_overlap', '0'),
+							'settings' => $settings,
+							),
+		      ), 'setting');
 
   drupal_add_js("$library_path/openseadragon.js");
   drupal_add_js("$module_path/js/djtilesource.js");

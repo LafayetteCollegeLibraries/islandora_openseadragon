@@ -1,17 +1,24 @@
 (function($) {
-  Drupal.behaviors.islandoraOpenSeadragon = {
-    attach: function(context, settings) {
-      var resourceUri = settings.islandoraOpenSeadragon.resourceUri;
-      var config = settings.islandoraOpenSeadragon.settings;
-      var openSeadragonId = '#' + config['id'];
-      $(openSeadragonId).each(function () {
-        if (!$(this).hasClass('processed')) {
-          config.tileSources = new Array();
-          resourceUri = (resourceUri instanceof Array) ? resourceUri : new Array(resourceUri);
-          $.each(resourceUri, function(index, uri) {
-            var tileSource = new OpenSeadragon.DjatokaTileSource(uri, settings.islandoraOpenSeadragon);
-            config.tileSources.push(tileSource);
-          });
+
+    Drupal.behaviors.islandoraOpenSeadragon = {
+
+	attach: function(context, settings) {
+
+	    var resourceUri = settings.islandoraOpenSeadragon.resourceUri;
+	    var config = settings.islandoraOpenSeadragon.settings;
+	    var openSeadragonId = '#' + config['id'];
+
+	    $(openSeadragonId).each(function () {
+
+		    if (!$(this).hasClass('processed')) {
+
+			config.tileSources = new Array();
+			resourceUri = (resourceUri instanceof Array) ? resourceUri : new Array(resourceUri);
+			$.each(resourceUri, function(index, uri) {
+
+				var tileSource = new OpenSeadragon.DjatokaTileSource(uri, settings.islandoraOpenSeadragon);
+				config.tileSources.push(tileSource);
+			    });
 
 	  /**
 	   * @author griffinj@lafayette.edu
@@ -107,10 +114,20 @@
 			  HOVER:   '/images/download_ImageIcon.png',
 			  DOWN:   '/images/download_ImageIcon.png',
 		      },
+		  },
+		  previousButton: "islandora-openseadragon-prev",
+		  nextButton:     "islandora-openseadragon-next",
+
+		  onPageChange: function(data) {
+
+		      $('#islandora-openseadragon-page-state').text('Page ' + (data.page + 1));
 		  }
 	      });
 
           var viewer = new OpenSeadragon(config);
+
+	  // Work-around
+	  $('#islandora-openseadragon-page-state').text('Page 1');
 
 	  /**
 	   * @author griffinj@lafayette.edu
