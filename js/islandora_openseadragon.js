@@ -97,10 +97,10 @@
 			  DOWN:   '/images/zoomout_ImageIcon.png',
 		      },
 		      home: {
-			  REST:   '/images/home_ImageIcon.png',
-			  GROUP:   '/images/home_ImageIcon.png',
-			  HOVER:   '/images/home_ImageIcon.png',
-			  DOWN:   '/images/home_ImageIcon.png',
+			  REST:   '/images/fittowindow_ImageIcon.png',
+			  GROUP:   '/images/fittowindow_ImageIcon.png',
+			  HOVER:   '/images/fittowindow_ImageIcon.png',
+			  DOWN:   '/images/fittowindow_ImageIcon.png',
 		      },
 		      fullpage: {
 			  REST:   '/images/fullpage_ImageIcon.png',
