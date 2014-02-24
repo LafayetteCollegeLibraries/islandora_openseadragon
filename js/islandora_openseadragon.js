@@ -115,13 +115,21 @@
 			  DOWN:   '/images/download_ImageIcon.png',
 		      },
 		  },
+
+		  /*
 		  previousButton: "islandora-openseadragon-prev",
 		  nextButton:     "islandora-openseadragon-next",
 
 		  onPageChange: function(data) {
 
 		      $('#islandora-openseadragon-page-state').text('Page ' + (data.page + 1));
-		  }
+		  },
+		  */
+
+		  showReferenceStrip: true,
+		  referenceStripScroll: 'vertical',
+
+		  showNavigator: false,
 	      });
 
           var viewer = new OpenSeadragon(config);
@@ -135,9 +143,15 @@
 	   * Work-around for styling
 	   *
 	   */
-
 	  $(viewer.element).find('form div').addClass('openseadragon-controls-container');
+	  $('.openseadragon-controls-container span:first-child').addClass('openseadragon-controls-navigator');
 	  $($(viewer.element).find('form div')[1]).attr('id', 'openseadragon-size-transform-container');
+
+	  /**
+	   * Work-around for disabling pagination controls
+	   *
+	   */
+	  $('.openseadragon-controls-container span:nth-child(2)').hide();
 
 	  /**
 	   * @author griffinj@lafayette.edu
@@ -225,6 +239,7 @@
               'svc.format': 'image/jpeg',
               'svc.region': scaled_box.y + ',' + scaled_box.x + ',' + (scaled_box.getBottomRight().y - scaled_box.y) + ',' + (scaled_box.getBottomRight().x - scaled_box.x),
             };
+
 	    /**
 	     * @author griffinj
 	     * Work-around for HTTPS and XSRF
@@ -232,11 +247,13 @@
 
 	     jQuery("#clip").attr('href',  Drupal.settings.basePath + 'islandora/object/' + settings.islandoraOpenSeadragon.pid + '/print?' + jQuery.param({
 	     */
+
 	    jQuery("#clip").attr('href',  Drupal.settings.basePath.replace(/^https/, 'http') + 'islandora/object/' + settings.islandoraOpenSeadragon.pid + '/print?' + jQuery.param({
               'clip': source.baseURL + '?' + jQuery.param(params),
               'dimensions': container.x + ',' + container.y,
             }));
           };
+
           viewer.addHandler("open", update_clip);
           viewer.addHandler("animationfinish", update_clip);
           $(this).addClass('processed');

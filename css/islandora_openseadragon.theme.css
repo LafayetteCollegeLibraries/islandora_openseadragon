@@ -16,3 +16,8 @@
   background-color: #F00;
   opacity: 0.5;
 }
+
+.openseadragon-controls-navigator {
+
+    display: block !important;
+}
