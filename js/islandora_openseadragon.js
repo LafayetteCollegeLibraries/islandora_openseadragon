@@ -128,8 +128,8 @@
 
 		  showReferenceStrip: true,
 		  referenceStripScroll: 'vertical',
-
-		  showNavigator: false,
+		  
+		  //showNavigator: false,
 	      });
 
           var viewer = new OpenSeadragon(config);
@@ -249,9 +249,25 @@
 	     */
 
 	    jQuery("#clip").attr('href',  Drupal.settings.basePath.replace(/^https/, 'http') + 'islandora/object/' + settings.islandoraOpenSeadragon.pid + '/print?' + jQuery.param({
-              'clip': source.baseURL + '?' + jQuery.param(params),
-              'dimensions': container.x + ',' + container.y,
-            }));
+			'clip': source.baseURL + '?' + jQuery.param(params),
+			    'dimensions': container.x + ',' + container.y,
+			    }));
+
+	    /**
+	     * Work-around
+	     * Integrating a class for styling selected referencestrip elements
+	     *
+	     */
+	    $('.referencestrip > div').click(function(e) {
+
+		    $('.referencestrip-selected').removeClass('referencestrip-selected');
+		    $(this).addClass('referencestrip-selected');
+		});
+
+	    if($('.referencestrip-selected').length == 0) {
+
+		$('.referencestrip > div').first().addClass('referencestrip-selected');
+	    }
           };
 
           viewer.addHandler("open", update_clip);
