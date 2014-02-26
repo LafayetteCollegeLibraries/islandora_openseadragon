@@ -159,7 +159,6 @@
 	   * Work-around for updating size controls upon rendering the image as a full-screen image
 	   *
 	   */
-
           //viewer.addHandler('pre-full-screen', function(event) {
 	  $('#openseadragon-size-transform-container span fieldgroup button:nth-of-type(4)').click(function(e) {
 
@@ -261,13 +260,17 @@
 	    $('.referencestrip > div').click(function(e) {
 
 		    $('.referencestrip-selected').removeClass('referencestrip-selected');
+		    //$(this).addClass('referencestrip-selected').parent('span').addClass('referencestrip-selected');
 		    $(this).addClass('referencestrip-selected');
 		});
 
 	    if($('.referencestrip-selected').length == 0) {
 
+		//$('.referencestrip > div').first().addClass('referencestrip-selected').parent('span').addClass('referencestrip-selected');
 		$('.referencestrip > div').first().addClass('referencestrip-selected');
 	    }
+
+	    $('#openseadragon-size-transform-container span').last().addClass('referencestrip-container');
           };
 
           viewer.addHandler("open", update_clip);
