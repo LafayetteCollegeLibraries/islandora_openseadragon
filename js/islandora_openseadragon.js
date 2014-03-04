@@ -128,7 +128,8 @@
 
 		  showReferenceStrip: true,
 		  referenceStripScroll: 'vertical',
-		  
+		  //referenceStripElement: document.getElementById('book-viewer-pages-overlay')
+
 		  //showNavigator: false,
 	      });
 
@@ -218,8 +219,18 @@
                   box.height = container.y;
                 }
               }
+
+
+
+	      //$('.referencestrip').wrap('<div class="referencestrip-inner-container"><div></div></div>');
+	      //$('.openseadragon-controls-navigator').detach().insertBefore('#openseadragon-size-transform-container');
+	      //$('.openseadragon-controls-navigator').clone().before('#openseadragon-size-transform-container');
+	      //openseadragon-controls-navigator
+	      $('.openseadragon-controls-navigator').detach().appendTo('#book-viewer-pages-overlay');
+
               return box;
             }
+
             var source = viewer.source;
             var zoom = viewer.viewport.getZoom();
             var size = new OpenSeadragon.Rect(0, 0, source.dimensions.x, source.dimensions.y);
@@ -271,6 +282,8 @@
 	    }
 
 	    $('#openseadragon-size-transform-container span').last().addClass('referencestrip-container');
+
+	    $('.referencestrip-container').wrapInner('<div class="referencestrip-outer-container"></div>');
           };
 
           viewer.addHandler("open", update_clip);

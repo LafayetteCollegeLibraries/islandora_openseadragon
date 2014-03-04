@@ -21,3 +21,20 @@
 
     display: block !important;
 }
+
+.referencestrip-inner-container {
+
+    position: absolute;
+}
+
+.openseadragon-controls-navigator {
+
+    position: inherit !important;
+    width: 180px;
+    z-index: 1;
+}
+
+.referencestrip-container {
+
+    margin-top: 38px !important;
+}
