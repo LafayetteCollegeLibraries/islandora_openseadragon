@@ -29,12 +29,38 @@
 
 .openseadragon-controls-navigator {
 
-    position: inherit !important;
+    /* position: inherit !important; */
+    position: relative !important;
     width: 180px;
     z-index: 1;
+    float: right;
+}
+
+.openseadragon-navigation-container {
+
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    /* height: 100%; */
+    /* float: right; */
 }
 
 .referencestrip-container {
 
-    margin-top: 38px !important;
+    /* margin-top: 38px !important; */
+}
+
+/* style image viewer controls */
+
+.openseadragon-controls-navigator > fieldgroup > button {
+	
+	background-color:#EEEEEE !important;
+	border:1px solid #AAAAAA !important;
+	border-radius:2px;
+	margin:2px !important;
+}
+
+.openseadragon-controls-navigator > fieldgroup > button > img {
+	
+	opacity:1 !important;
 }

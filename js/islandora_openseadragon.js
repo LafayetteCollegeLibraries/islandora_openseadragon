@@ -126,6 +126,7 @@
 		  },
 		  */
 
+		  navigatorPosition: 'BOTTOM_RIGHT',
 		  showReferenceStrip: true,
 		  referenceStripScroll: 'vertical',
 		  //referenceStripElement: document.getElementById('book-viewer-pages-overlay')
@@ -226,7 +227,18 @@
 	      //$('.openseadragon-controls-navigator').detach().insertBefore('#openseadragon-size-transform-container');
 	      //$('.openseadragon-controls-navigator').clone().before('#openseadragon-size-transform-container');
 	      //openseadragon-controls-navigator
-	      $('.openseadragon-controls-navigator').detach().appendTo('#book-viewer-pages-overlay');
+	      //$('.openseadragon-controls-navigator').detach().appendTo('#book-viewer-pages-overlay');
+	      //$('.openseadragon-controls-navigator').detach().prependTo('#islandora-openseadragon').wrap('<div class="openseadragon-navigation-container"></div>');
+
+	      /**
+	       * Work-around for relocating the navigation buttons
+	       * @todo Refactor with OpenSeadragon
+	       *
+	       */
+	      if($('.openseadragon-navigation-container').length == 0) {
+
+		  $('.openseadragon-controls-navigator').detach().appendTo('#islandora-openseadragon > form').wrap('<div class="openseadragon-navigation-container"></div>');
+	      }
 
               return box;
             }
