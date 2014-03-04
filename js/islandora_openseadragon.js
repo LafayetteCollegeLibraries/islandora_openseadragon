@@ -296,7 +296,10 @@
 
 	    $('#openseadragon-size-transform-container span').last().addClass('referencestrip-container');
 
-	    $('.referencestrip-container').wrapInner('<div class="referencestrip-outer-container"></div>');
+	    if($('.referencestrip-outer-container').length == 0) {
+		
+		$('.referencestrip-container').wrapInner('<div class="referencestrip-outer-container"></div>');
+	    }
           };
 
           viewer.addHandler("open", update_clip);
