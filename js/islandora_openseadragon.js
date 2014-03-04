@@ -282,15 +282,16 @@
 	     */
 	    $('.referencestrip > div').click(function(e) {
 
-		    $('.referencestrip-selected').removeClass('referencestrip-selected');
+		    $('.referencestrip-selected').removeClass('referencestrip-selected').addClass('referencestrip-unselected');
 		    //$(this).addClass('referencestrip-selected').parent('span').addClass('referencestrip-selected');
-		    $(this).addClass('referencestrip-selected');
+
+		    $(this).removeClass('referencestrip-unselected').addClass('referencestrip-selected');
 		});
 
 	    if($('.referencestrip-selected').length == 0) {
 
 		//$('.referencestrip > div').first().addClass('referencestrip-selected').parent('span').addClass('referencestrip-selected');
-		$('.referencestrip > div').first().addClass('referencestrip-selected');
+		$('.referencestrip > div').addClass('referencestrip-unselected').first().removeClass('referencestrip-unselected').addClass('referencestrip-selected');
 	    }
 
 	    $('#openseadragon-size-transform-container span').last().addClass('referencestrip-container');
