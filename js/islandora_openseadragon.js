@@ -126,8 +126,8 @@
 		  },
 		  */
 
+		  showReferenceStrip: config.tileSources.length > 1,
 		  navigatorPosition: 'BOTTOM_RIGHT',
-		  showReferenceStrip: true,
 		  referenceStripScroll: 'vertical',
 		  //referenceStripElement: document.getElementById('book-viewer-pages-overlay')
 
