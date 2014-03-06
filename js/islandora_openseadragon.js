@@ -147,7 +147,7 @@
 	   */
 	  $(viewer.element).find('form div').addClass('openseadragon-controls-container');
 	  $('.openseadragon-controls-container span:first-child').addClass('openseadragon-controls-navigator');
-	  $($(viewer.element).find('form div')[1]).attr('id', 'openseadragon-size-transform-container');
+	  //$($(viewer.element).find('form div')[1]).attr('id', 'openseadragon-size-transform-container');
 
 	  /**
 	   * Work-around for disabling pagination controls
@@ -235,10 +235,12 @@
 	       * @todo Refactor with OpenSeadragon
 	       *
 	       */
+	      /*
 	      if($('.openseadragon-navigation-container').length == 0) {
 
 		  $('.openseadragon-controls-navigator').detach().appendTo('#islandora-openseadragon > form').wrap('<div class="openseadragon-navigation-container"></div>');
 	      }
+	      */
 
               return box;
             }
