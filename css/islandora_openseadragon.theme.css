@@ -27,14 +27,18 @@
     position: absolute;
 }
 
+/**
+ * Navigation controls have been relocated to the top-left corner of the containing element
+ * Resolves issue DSSSM-479 
 .openseadragon-controls-navigator {
 
-    /* position: inherit !important; */
+    / * position: inherit !important; * /
     position: relative !important;
     width: 180px;
     z-index: 1;
     float: right;
 }
+*/
 
 .openseadragon-navigation-container {
 
