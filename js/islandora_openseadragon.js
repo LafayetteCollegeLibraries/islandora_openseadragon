@@ -159,10 +159,11 @@
 	   * @author griffinj@lafayette.edu
 	   *
 	   * Work-around for updating size controls upon rendering the image as a full-screen image
-	   *
+	   * Resolves DSSSM-663
 	   */
           //viewer.addHandler('pre-full-screen', function(event) {
-	  $('#openseadragon-size-transform-container span fieldgroup button:nth-of-type(4)').click(function(e) {
+	  //$('#openseadragon-size-transform-container span fieldgroup button:nth-of-type(4)').click(function(e) {
+	  $('.openseadragon-controls-navigator fieldgroup button:nth-of-type(4)').click(function(e) {
 
 		  var img = $(this).find('img');
 
