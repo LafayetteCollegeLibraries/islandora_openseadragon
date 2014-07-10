@@ -20,6 +20,14 @@
 				config.tileSources.push(tileSource);
 			    });
 
+			/**
+			 * @author griffinj@lafayette.edu
+			 * For the addition of overlays (passed from the OpenAnnotation SVG selectors within the RELS-EXT triples)
+			 *
+			 */
+			//config.tileSources.push({overlays: settings.islandoraOpenSeadragon.overlays});
+			config.overlays = settings.islandoraOpenSeadragon.overlays;
+
 	  /**
 	   * @author griffinj@lafayette.edu
 	   * Work-around for scrolling

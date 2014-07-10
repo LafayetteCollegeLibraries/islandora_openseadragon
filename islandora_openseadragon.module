@@ -5,6 +5,9 @@
  * Hooks and callbacks for this module.
  */
 
+  // For requiring all Composer dependencies
+require 'vendor/autoload.php';
+
 /**
  * Implements hook_menu().
  */
@@ -74,12 +77,18 @@ function islandora_openseadragon_islandora_viewer_info() {
  */
 function islandora_openseadragon_callback($params = NULL, $fedora_object = NULL) {
 
+  $overlays = array();
+
   if(array_key_exists('pages', $params)) {
 
     module_load_include('inc', 'islandora', 'includes/authtokens');
-    $map = function($page_pid) {
 
-      $page_obj = islandora_object_load($page_pid);
+    $page_uris = array_keys($params['pages']);
+    $pages = array_map('islandora_object_load', $page_uris);
+
+    $map = function($page_obj) {
+
+      //$page_obj = islandora_object_load($page_pid);
       $token = islandora_get_object_token($page_obj->id, 'JP2', 2);
       return url("islandora/object/{$page_obj->id}/datastream/JP2/view",
 		 array('absolute' => TRUE,
@@ -87,13 +96,71 @@ function islandora_openseadragon_callback($params = NULL, $fedora_object = NULL)
 		       ));
     };
 
-    $uri = array_map($map, array_keys($params['pages']));
+    $uri = array_map($map, $pages);
+
+    /**
+     * If there are overlays generated from the RDF of the Object being Views (i. e. the Yohe Album collections), append these as well
+     *
+     */
+
+    /**
+     * Generate the overlays from the OpenAnnotation SVG selectors
+     *
+     */
+
+    $fedora_object = isset($fedora_object) ? $fedora_object : $params['object'];
+
+    $parent_collection = array_shift($fedora_object->getParents());
+    
+    // Handling for member of the Yohe Albums collection
+    // Refactor for an administrative configuration interface
+    if(preg_match('/Yohe/', $parent_collection)) {
+    
+      for($i=0;$i < count($pages);$i++) {
+
+	$page = $pages[$i];
+
+	/**
+	 * Retrieve the SVG selectors from the Page Object
+	 *
+	 */
+
+	// Set for any uncommon namespaces (e. g. Fedora and OpenAnnotation ontologies)
+	EasyRdf_Namespace::set('oa', 'http://www.w3.org/ns/oa#');
+	EasyRdf_Namespace::set('cnt', 'http://www.w3.org/2011/content#');
+	
+	// Deserialize the Graphs
+	$rels_ext_graph = new EasyRdf_Graph('info:fedora/' . $page->id);
+	$rels_ext_graph->parse($page['RELS-EXT']->content);
+
+	// Retrieve the embedded SVG Document for the selector
+	$selector = $rels_ext_graph->resource();
+	$svg = $selector->get('cnt:chars');
+
+	// Deserialize the SVG Document
+	$svg_doc = new SimpleXMLElement((string) $svg);
+
+	// Set the namespace and iterate for all rect entities
+	$svg_doc->registerXPathNamespace('svg', 'http://www.w3.org/2000/svg');
+	foreach($svg_doc->xpath('//svg:rect') as $rect) {
+
+	  $overlays[] = array('id' => 'openseadragon-overlay-' . $i,
+			      'x' => ((float) $rect['x']) / 10000,
+			      'y' => ((float) $rect['y']) / 10000,
+			      'width' => ((float) $rect['x']) / 10000,
+			      'height' => ((float) $rect['y']) / 10000,
+			      'className' => 'openseadragon-overlay'
+			      );
+
+	}
+      }
+    }
   } else {
 
     $uri = $params['jp2_url'];
   }
 
-  return theme('islandora_openseadragon_viewer', array('uri' => $uri, 'fedora_object' => $fedora_object));
+  return theme('islandora_openseadragon_viewer', array('uri' => $uri, 'fedora_object' => $fedora_object, 'overlays' => $overlays));
 }
 
 /**
@@ -171,9 +238,16 @@ function islandora_openseadragon_preprocess_islandora_openseadragon_viewer(&$var
     return preg_replace('/^https/', 'http', $tile_source);
   };
 
+  $overlays = $variables['overlays'];
+
   drupal_add_js(array('islandoraOpenSeadragon' => array('pid' => isset($variables['fedora_object']) ? $variables['fedora_object']->id : NULL,
 							//'resourceUri' => preg_replace('/^https/', 'http', $variables['uri']),
 							'resourceUri' => array_map($map, $tile_sources),
+							/**
+							 * Integrating overlay support
+							 *
+							 */
+							'overlays' => $overlays,
 							'tileSize' => (int) variable_get('islandora_openseadragon_tile_size', '256'),
 							'tileOverlap' => (int) variable_get('islandora_openseadragon_tile_overlap', '0'),
 							'settings' => $settings,

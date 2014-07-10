@@ -68,3 +68,14 @@
 	
 	opacity:1 !important;
 }
+
+/**
+ * For the overlays
+ */
+.openseadragon-overlay {
+
+    background-color: white;
+    border: 2px solid #0A7EBE;
+    opacity: 0.4;
+    outline: 10px auto #0A7EBE;
+}
