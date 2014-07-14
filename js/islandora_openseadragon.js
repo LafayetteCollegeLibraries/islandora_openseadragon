@@ -8,6 +8,8 @@
 	    var config = settings.islandoraOpenSeadragon.settings;
 	    var openSeadragonId = '#' + config['id'];
 
+	    var overlays = settings.islandoraOpenSeadragon.overlays;
+
 	    $(openSeadragonId).each(function () {
 
 		    if (!$(this).hasClass('processed')) {
@@ -17,6 +19,13 @@
 			$.each(resourceUri, function(index, uri) {
 
 				var tileSource = new OpenSeadragon.DjatokaTileSource(uri, settings.islandoraOpenSeadragon);
+
+				// Append the overlays to the tileSource Object
+				/**
+				 * Uncertain as to why this is problematic
+				 *
+				 */
+				tileSource.overlays = overlays[index];
 				config.tileSources.push(tileSource);
 			    });
 
@@ -26,7 +35,7 @@
 			 *
 			 */
 			//config.tileSources.push({overlays: settings.islandoraOpenSeadragon.overlays});
-			config.overlays = settings.islandoraOpenSeadragon.overlays;
+			config.overlays = settings.islandoraOpenSeadragon.globalOverlays;
 
 	  /**
 	   * @author griffinj@lafayette.edu

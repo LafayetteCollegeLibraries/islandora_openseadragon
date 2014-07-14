@@ -53,7 +53,7 @@ function islandora_openseadragon_islandora_viewer_info() {
         // DZI has xml as mimetype? Not sure how to handle that.
       'mimetype' => array('image/jp2'),
       'model' => array('islandora:bookCModel'), // @author griffinj@lafayette.edu
-    ),
+				       ),
   );
 }
 
@@ -78,6 +78,7 @@ function islandora_openseadragon_islandora_viewer_info() {
 function islandora_openseadragon_callback($params = NULL, $fedora_object = NULL) {
 
   $overlays = array();
+  $global_overlays = array();
 
   if(array_key_exists('pages', $params)) {
 
@@ -86,6 +87,7 @@ function islandora_openseadragon_callback($params = NULL, $fedora_object = NULL)
     $page_uris = array_keys($params['pages']);
     $pages = array_map('islandora_object_load', $page_uris);
 
+    // For Pages without overlays...
     $map = function($page_obj) {
 
       //$page_obj = islandora_object_load($page_pid);
@@ -107,52 +109,75 @@ function islandora_openseadragon_callback($params = NULL, $fedora_object = NULL)
      * Generate the overlays from the OpenAnnotation SVG selectors
      *
      */
-
     $fedora_object = isset($fedora_object) ? $fedora_object : $params['object'];
 
     $parent_collection = array_shift($fedora_object->getParents());
     
     // Handling for member of the Yohe Albums collection
     // Refactor for an administrative configuration interface
-    if(preg_match('/Yohe/', $parent_collection)) {
+    if(preg_match('/yohe\:/', $parent_collection)) {
+
+      //foreach($pages as $page) {
+      for($page_index=0;$page_index < count($pages);$page_index++) {
+
+	$page = $pages[$page_index];
+
+	// OpenAnnotation Selectors are managed as Islandora Page Objects
+	$selector_uris = array_keys(islandora_paged_content_get_pages($page));
+	$selectors = array_map('islandora_object_load', $selector_uris);
     
-      for($i=0;$i < count($pages);$i++) {
+	for($i=0;$i < count($selectors);$i++) {
 
-	$page = $pages[$i];
+	  $selector = $selectors[$i];
+	  
+	  /**
+	   * Retrieve the SVG selectors from the Selector Object
+	   *
+	   */
 
-	/**
-	 * Retrieve the SVG selectors from the Page Object
-	 *
-	 */
-
-	// Set for any uncommon namespaces (e. g. Fedora and OpenAnnotation ontologies)
-	EasyRdf_Namespace::set('oa', 'http://www.w3.org/ns/oa#');
-	EasyRdf_Namespace::set('cnt', 'http://www.w3.org/2011/content#');
+	  // Set for any uncommon namespaces (e. g. Fedora and OpenAnnotation ontologies)
+	  EasyRdf_Namespace::set('oa', 'http://www.w3.org/ns/oa#');
+	  EasyRdf_Namespace::set('cnt', 'http://www.w3.org/2011/content#');
 	
-	// Deserialize the Graphs
-	$rels_ext_graph = new EasyRdf_Graph('info:fedora/' . $page->id);
-	$rels_ext_graph->parse($page['RELS-EXT']->content);
+	  // Deserialize the Graphs
+	  $rels_ext_graph = new EasyRdf_Graph('info:fedora/' . $selector->id);
+	  $rels_ext_graph->parse($selector['RELS-EXT']->content);
 
-	// Retrieve the embedded SVG Document for the selector
-	$selector = $rels_ext_graph->resource();
-	$svg = $selector->get('cnt:chars');
+	  // Retrieve the embedded SVG Document for the selector
+	  $selector_res = $rels_ext_graph->resource();
+	  $svg = $selector_res->get('cnt:chars');
 
-	// Deserialize the SVG Document
-	$svg_doc = new SimpleXMLElement((string) $svg);
+	  // Deserialize the SVG Document
+	  $svg_doc = new SimpleXMLElement((string) $svg);
 
-	// Set the namespace and iterate for all rect entities
-	$svg_doc->registerXPathNamespace('svg', 'http://www.w3.org/2000/svg');
-	foreach($svg_doc->xpath('//svg:rect') as $rect) {
+	  // Set the namespace and iterate for all rect entities
+	  $svg_doc->registerXPathNamespace('svg', 'http://www.w3.org/2000/svg');
 
-	  $overlays[] = array('id' => 'openseadragon-overlay-' . $i,
-			      'x' => ((float) $rect['x']) / 10000,
-			      'y' => ((float) $rect['y']) / 10000,
-			      'width' => ((float) $rect['x']) / 10000,
-			      'height' => ((float) $rect['y']) / 10000,
-			      'className' => 'openseadragon-overlay'
-			      );
+	  $page_overlays = array();
 
+	  foreach($svg_doc->xpath('//svg:rect') as $rect) {
+
+	    $overlay = array('id' => 'openseadragon-overlay-' . $page_index . '-' . $i,
+			     //'x' => ((float) $rect['x'] / 675.297619048) / 6,
+			     //'y' => ((float) $rect['y'] / 675.297619048) / 6,
+			     'x' => ((float) $rect['x'] / 696) / 6,
+			     'y' => ((float) $rect['y'] / 696) / 6,
+			     //'width' => ((float) $rect['width'] / 675.297619048) / 2.512820513,
+			     //'height' => ((float) $rect['height'] / 675.297619048) / 2.512820513,
+			     //'width' => ((float) $rect['width'] / 675.297619048) / 6,
+			     //'height' => ((float) $rect['height'] / 675.297619048) / 6,
+			     'width' => ((float) $rect['width'] / 696) / 6,
+			     'height' => ((float) $rect['height'] / 696) / 6,
+			     'className' => 'openseadragon-overlay openseadragon-overlay-' . $page_index . '-' . $i
+			     );
+	    
+	    $page_overlays[] = $overlay;
+	    $global_overlays[] = $overlay;
+	    
+	  }
 	}
+	
+	$overlays[$page_index] = $page_overlays;
       }
     }
   } else {
@@ -160,7 +185,7 @@ function islandora_openseadragon_callback($params = NULL, $fedora_object = NULL)
     $uri = $params['jp2_url'];
   }
 
-  return theme('islandora_openseadragon_viewer', array('uri' => $uri, 'fedora_object' => $fedora_object, 'overlays' => $overlays));
+  return theme('islandora_openseadragon_viewer', array('uri' => $uri, 'fedora_object' => $fedora_object, 'overlays' => $overlays, 'global_overlays' => $global_overlays));
 }
 
 /**
@@ -239,6 +264,7 @@ function islandora_openseadragon_preprocess_islandora_openseadragon_viewer(&$var
   };
 
   $overlays = $variables['overlays'];
+  $global_overlays = $variables['global_overlays'];
 
   drupal_add_js(array('islandoraOpenSeadragon' => array('pid' => isset($variables['fedora_object']) ? $variables['fedora_object']->id : NULL,
 							//'resourceUri' => preg_replace('/^https/', 'http', $variables['uri']),
@@ -248,6 +274,7 @@ function islandora_openseadragon_preprocess_islandora_openseadragon_viewer(&$var
 							 *
 							 */
 							'overlays' => $overlays,
+							'globalOverlays' => $global_overlays,
 							'tileSize' => (int) variable_get('islandora_openseadragon_tile_size', '256'),
 							'tileOverlap' => (int) variable_get('islandora_openseadragon_tile_overlap', '0'),
 							'settings' => $settings,
