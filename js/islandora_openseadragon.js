@@ -16,6 +16,10 @@
 
 			config.tileSources = new Array();
 			resourceUri = (resourceUri instanceof Array) ? resourceUri : new Array(resourceUri);
+
+			/**
+			 *
+			 */
 			$.each(resourceUri, function(index, uri) {
 
 				var tileSource = new OpenSeadragon.DjatokaTileSource(uri, settings.islandoraOpenSeadragon);
@@ -325,7 +329,9 @@
           viewer.addHandler("open", update_clip);
           viewer.addHandler("animationfinish", update_clip);
           $(this).addClass('processed');
-        }
+		    }
+
+		    
 
 	/**
 	 * @griffinj
@@ -341,7 +347,11 @@
 		viewer.setFullPage(false);
 	    }
 	};
-      });
-    }
+	
+	$(this).data('islandoraOpenSeadragon.viewer', viewer);
+
+		});
+
+	}
   };
 })(jQuery);
