@@ -82,6 +82,7 @@ function islandora_openseadragon_callback($params = NULL, $fedora_object = NULL)
 
   if(array_key_exists('jp2_url', $params)) {
 
+    $params['jp2_url'] = preg_replace('/\/\/elc\.prod/', '//digital', $params['jp2_url']);
     $params['jp2_url'] = preg_replace('/\/\/elc/', '//digital', $params['jp2_url']);
   }
 
