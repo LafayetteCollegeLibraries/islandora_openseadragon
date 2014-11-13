@@ -80,6 +80,11 @@ function islandora_openseadragon_callback($params = NULL, $fedora_object = NULL)
   $overlays = array();
   $global_overlays = array();
 
+  if(array_key_exists('jp2_url', $params)) {
+
+    $params['jp2_url'] = preg_replace('/\/\/elc/', '//digital', $params['jp2_url']);
+  }
+
   if(array_key_exists('pages', $params)) {
 
     module_load_include('inc', 'islandora', 'includes/authtokens');
@@ -92,8 +97,11 @@ function islandora_openseadragon_callback($params = NULL, $fedora_object = NULL)
 
       //$page_obj = islandora_object_load($page_pid);
       $token = islandora_get_object_token($page_obj->id, 'JP2', 2);
+
+      //return url("http://digital.stage.lafayette.edu/islandora/object/{$page_obj->id}/datastream/JP2/view",
       return url("islandora/object/{$page_obj->id}/datastream/JP2/view",
 		 array('absolute' => TRUE,
+		       'external' => TRUE,
 		       'query' => array('token' => $token),
 		       ));
     };
